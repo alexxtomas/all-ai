@@ -17,7 +17,7 @@ export default function MobileSidebar() {
   return (
     <Sheet>
       <SheetTrigger>
-        <Button variant={'ghost'} size={'icon'} className='md:hidden'>
+        <Button asChild variant={'ghost'} size={'icon'} className='md:hidden w-[24px] h-[24px]'>
           <Menu />
         </Button>
       </SheetTrigger>
