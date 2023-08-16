@@ -5,8 +5,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-const matchedPathnameStyles = 'text-white bg-white/10'
-
 export default function Sidebar() {
   const pathname = usePathname()
 
@@ -21,14 +19,13 @@ export default function Sidebar() {
         </Link>
         <ul className='ml-[5px]'>
           {ROUTES.map((route, index) => {
-            if (!route) return
             return (
               <li key={index}>
                 <Link
                   href={route.href}
                   className={cn(
                     'w-full flex items-center text-sm group p-3 justify-start font-medium cursor-pointer hover:text-white hover:bg-white/10 rounded-lg',
-                    pathname === route.href && matchedPathnameStyles
+                    pathname === route.href ? 'text-white bg-white/10' : 'text-zinc-400'
                   )}
                 >
                   <route.icon className={cn('h-5 w-5 mr-3', route.color)}></route.icon>
