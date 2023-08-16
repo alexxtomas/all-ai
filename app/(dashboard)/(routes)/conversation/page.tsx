@@ -8,6 +8,15 @@ import { valibotResolver } from '@hookform/resolvers/valibot'
 import { Input } from '@/components/ui/input'
 import { type Input as ValibotInputType, object, string, minLength } from 'valibot'
 import { Button } from '@/components/ui/button'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { ChatCompletionRequestMessage } from 'openai'
+import { sendMessages } from '@/services/api/conversation'
+import Empty from '@/components/empty'
+import Loader from '@/components/loader'
+import { cn } from '@/lib/utils'
+import UserAvatar from '@/components/user-avatar'
+import BotAvatar from '@/components/bot-avatar'
 
 const CONVERSATION_FORM_SCHEMA = object({
   prompt: string([minLength(1, 'Prompt is required.')])
@@ -16,13 +25,38 @@ const CONVERSATION_FORM_SCHEMA = object({
 type ConversationFormType = ValibotInputType<typeof CONVERSATION_FORM_SCHEMA>
 
 export default function ConversationPage() {
+  const router = useRouter()
+  const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([])
   const form = useForm<ConversationFormType>({
-    resolver: valibotResolver(CONVERSATION_FORM_SCHEMA)
+    resolver: valibotResolver(CONVERSATION_FORM_SCHEMA),
+    defaultValues: {
+      prompt: ''
+    }
   })
 
   const isLoading = form.formState.isSubmitting
+
+  const noMessages = messages.length === 0 && !isLoading
   const onSubmit = async (values: ConversationFormType) => {
-    console.log(values)
+    try {
+      const userMessage: ChatCompletionRequestMessage = {
+        role: 'user',
+        content: values.prompt
+      }
+
+      const newMessages = [...messages, userMessage]
+
+      const data = await sendMessages({ messages: newMessages })
+
+      setMessages((curr) => [...curr, userMessage, data])
+
+      form.reset()
+    } catch (err) {
+      // Open Pro Modal
+      console.error(err)
+    } finally {
+      router.refresh()
+    }
   }
 
   return (
@@ -67,7 +101,29 @@ export default function ConversationPage() {
             </form>
           </Form>
         </div>
-        <div className='space-y-4 mt-4'>Message Content</div>
+        <div className='space-y-4 mt-4'>
+          {isLoading && (
+            <div className='p-8 rounded-lg w-full flex  items-center justify-center bg-muted'>
+              <Loader />
+            </div>
+          )}
+          {noMessages && <Empty label='No conversation started.' />}
+          <ul className='flex flex-col-reverse gap-y-4'>
+            {messages.map((message) => {
+              const isUserMessage = message.role === 'user'
+              const changingStyles = isUserMessage ? 'bg-white border border-black/10 ' : 'bg-muted'
+              return (
+                <li
+                  className={cn('p-8 w-full flex items-center gap-x-8 rounded-lg', changingStyles)}
+                  key={message.content}
+                >
+                  {isUserMessage ? <UserAvatar /> : <BotAvatar />}
+                  <p className='text-sm'>{message.content}</p>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
       </div>
     </section>
   )
