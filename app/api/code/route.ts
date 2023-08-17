@@ -1,10 +1,11 @@
 import ApiError from '@/entities/api_error'
+import { OPENAI_API_KEY } from '@/utils/env'
 import { auth } from '@clerk/nextjs'
 import { NextResponse } from 'next/server'
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from 'openai'
 
 const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: OPENAI_API_KEY
 })
 
 const openai = new OpenAIApi(configuration)
