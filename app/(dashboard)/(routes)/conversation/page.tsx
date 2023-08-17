@@ -17,8 +17,11 @@ import { cn } from '@/lib/utils'
 import UserAvatar from '@/components/user-avatar'
 import BotAvatar from '@/components/bot-avatar'
 import { conversationFormSchema, ConversationFormType } from './schema'
+import ApiError from '@/entities/api_error'
+import { useProModalStore } from '@/store/use-pro-modal-store'
 
 export default function ConversationPage() {
+  const proModal = useProModalStore((state) => state)
   const router = useRouter()
   const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([])
   const form = useForm<ConversationFormType>({
@@ -47,6 +50,9 @@ export default function ConversationPage() {
       form.reset()
     } catch (err) {
       // Open Pro Modal
+      if (err instanceof ApiError && err.status === 403) {
+        proModal.onOpen()
+      }
     } finally {
       router.refresh()
     }
@@ -102,13 +108,13 @@ export default function ConversationPage() {
           )}
           {noMessages && <Empty label='No conversation started.' />}
           <ul className='flex flex-col-reverse gap-y-4'>
-            {messages.map((message) => {
+            {messages.map((message, idx) => {
               const isUserMessage = message.role === 'user'
               const changingStyles = isUserMessage ? 'bg-white border border-black/10 ' : 'bg-muted'
               return (
                 <li
                   className={cn('p-8 w-full flex items-center gap-x-8 rounded-lg', changingStyles)}
-                  key={message.content}
+                  key={`${message.content}-${idx}`}
                 >
                   {isUserMessage ? <UserAvatar /> : <BotAvatar />}
                   <p className='text-sm'>{message.content}</p>
