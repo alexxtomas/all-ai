@@ -7,8 +7,6 @@ export const sendMessages = async ({ messages }: { messages: ChatCompletionReque
       body: JSON.stringify(messages)
     })
 
-    console.log(response)
-
     if (!response.ok) {
       throw new Error('Error sending message')
     }
