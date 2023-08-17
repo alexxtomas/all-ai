@@ -4,8 +4,13 @@ import { MONTSERRAT, ROUTES } from '@/utils/constants'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import FreeCounter from '@/components/free-counter'
 
-export default function Sidebar() {
+interface Props {
+  apiLimitCount: number
+}
+
+export default function Sidebar({ apiLimitCount }: Props) {
   const pathname = usePathname()
 
   return (
@@ -36,6 +41,7 @@ export default function Sidebar() {
           })}
         </ul>
       </div>
+      <FreeCounter count={apiLimitCount} />
     </div>
   )
 }
