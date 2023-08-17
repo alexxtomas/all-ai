@@ -1,5 +1,6 @@
-import LinkCard from '@/components/link-card'
-import { TOOLS } from './constants'
+import ProductCard from '@/components/product-card'
+import { TOOLS } from '@/utils/constants'
+import { ArrowRight } from 'lucide-react'
 
 export default function DashboardPage() {
   return (
@@ -12,7 +13,7 @@ export default function DashboardPage() {
       </header>
       <div className='px-4 md:px-20 lg:px-32 space-y-4'>
         {TOOLS.map((tool) => {
-          return <LinkCard key={tool.href} {...tool} />
+          return <ProductCard key={tool.href} asLink {...tool} icon={ArrowRight} />
         })}
       </div>
     </section>
