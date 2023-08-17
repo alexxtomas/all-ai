@@ -9,7 +9,7 @@ export const sendMessages = async ({ messages }: { messages: ChatCompletionReque
     })
 
     if (!response.ok) {
-      throw new Error('Error sending message')
+      throw new ApiError({ message: response.statusText, status: response.status })
     }
 
     return response.json()
