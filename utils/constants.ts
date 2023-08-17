@@ -18,7 +18,7 @@ export const ROUTES = [
   },
   {
     label: 'Conversation',
-    href: '/conversatioin',
+    href: '/conversation',
     icon: MessageSquare,
     color: 'text-violet-500'
   },
