@@ -1,5 +1,5 @@
 import LinkCard from '@/components/link-card'
-import { TOOLS } from '@/utils/constants'
+import { TOOLS } from './constants'
 
 export default function DashboardPage() {
   return (
