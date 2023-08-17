@@ -3,7 +3,7 @@ import { OPENAI_API_KEY } from '@/utils/env'
 import { auth } from '@clerk/nextjs'
 import { NextResponse } from 'next/server'
 import { Configuration, OpenAIApi } from 'openai'
-import { increaseApiLimit, checkApiLimit } from '@/lib/api-limit'
+import { increaseApiLimitCount, checkApiLimitCount } from '@/lib/api-limit'
 const configuration = new Configuration({
   apiKey: OPENAI_API_KEY
 })
@@ -19,7 +19,7 @@ async function validation({
   configuration: Configuration
   messages: string[]
 }) {
-  const freeTrial = await checkApiLimit()
+  const freeTrial = await checkApiLimitCount()
   if (!userId) {
     throw new ApiError({ message: 'Unauthorized', status: 401 })
   }
@@ -52,7 +52,7 @@ export async function POST(req: Request) {
       model: 'gpt-3.5-turbo',
       messages
     })
-    await increaseApiLimit()
+    await increaseApiLimitCount()
 
     return NextResponse.json(response.data.choices[0].message)
   } catch (err) {

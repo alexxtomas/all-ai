@@ -3,14 +3,14 @@ import { REPLICATE_API_KEY } from '@/utils/env'
 import { auth } from '@clerk/nextjs'
 import { NextResponse } from 'next/server'
 import Replicate from 'replicate'
-import { increaseApiLimit, checkApiLimit } from '@/lib/api-limit'
+import { increaseApiLimitCount, checkApiLimitCount } from '@/lib/api-limit'
 
 const replicate = new Replicate({
   auth: REPLICATE_API_KEY!
 })
 
 async function validation({ userId, prompt }: { userId: string | null; prompt: string }) {
-  const freeTrial = await checkApiLimit()
+  const freeTrial = await checkApiLimitCount()
   if (!userId) {
     throw new ApiError({ message: 'Unauthorized', status: 401 })
   }
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
         }
       }
     )
-    await increaseApiLimit()
+    await increaseApiLimitCount()
     return NextResponse.json(response)
   } catch (err) {
     console.log('[VIDEO_ERROR]:', err)
