@@ -1,3 +1,4 @@
+import ApiError from '@/entities/api_error'
 import { ChatCompletionRequestMessage } from 'openai'
 
 export const sendMessages = async ({ messages }: { messages: ChatCompletionRequestMessage[] }) => {
@@ -13,6 +14,6 @@ export const sendMessages = async ({ messages }: { messages: ChatCompletionReque
 
     return response.json()
   } catch (err) {
-    console.log(err)
+    throw err
   }
 }

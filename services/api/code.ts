@@ -8,11 +8,11 @@ export const sendCodeQuery = async ({ messages }: { messages: ChatCompletionRequ
     })
 
     if (!response.ok) {
-      throw new Error('Error sending message')
+      throw new Error('[CODE_SERVICE]: Send Code Query Error ')
     }
 
     return response.json()
   } catch (err) {
-    console.log(err)
+    throw err
   }
 }
