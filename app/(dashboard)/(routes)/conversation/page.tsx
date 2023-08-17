@@ -6,7 +6,6 @@ import { MessageSquare } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { Input } from '@/components/ui/input'
-import { type Input as ValibotInputType, object, string, minLength } from 'valibot'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -17,18 +16,13 @@ import Loader from '@/components/loader'
 import { cn } from '@/lib/utils'
 import UserAvatar from '@/components/user-avatar'
 import BotAvatar from '@/components/bot-avatar'
-
-const CONVERSATION_FORM_SCHEMA = object({
-  prompt: string([minLength(1, 'Prompt is required.')])
-})
-
-type ConversationFormType = ValibotInputType<typeof CONVERSATION_FORM_SCHEMA>
+import { conversationFormSchema, ConversationFormType } from './schema'
 
 export default function ConversationPage() {
   const router = useRouter()
   const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([])
   const form = useForm<ConversationFormType>({
-    resolver: valibotResolver(CONVERSATION_FORM_SCHEMA),
+    resolver: valibotResolver(conversationFormSchema),
     defaultValues: {
       prompt: ''
     }

@@ -5,7 +5,6 @@ import { Code } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { Input } from '@/components/ui/input'
-import { type Input as ValibotInputType, object, string, minLength } from 'valibot'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -17,18 +16,13 @@ import UserAvatar from '@/components/user-avatar'
 import BotAvatar from '@/components/bot-avatar'
 import { sendCodeQuery } from '@/services/api/code'
 import ReactMarkdown from 'react-markdown'
-
-const CONVERSATION_FORM_SCHEMA = object({
-  prompt: string([minLength(1, 'Prompt is required.')])
-})
-
-type ConversationFormType = ValibotInputType<typeof CONVERSATION_FORM_SCHEMA>
+import { codeFormSchema, CodeFormType } from './schema'
 
 export default function CodePage() {
   const router = useRouter()
   const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([])
-  const form = useForm<ConversationFormType>({
-    resolver: valibotResolver(CONVERSATION_FORM_SCHEMA),
+  const form = useForm<CodeFormType>({
+    resolver: valibotResolver(codeFormSchema),
     defaultValues: {
       prompt: ''
     }
@@ -37,7 +31,7 @@ export default function CodePage() {
   const isLoading = form.formState.isSubmitting
 
   const noMessages = messages.length === 0 && !isLoading
-  const onSubmit = async (values: ConversationFormType) => {
+  const onSubmit = async (values: CodeFormType) => {
     try {
       const userMessage: ChatCompletionRequestMessage = {
         role: 'user',
