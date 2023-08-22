@@ -16,6 +16,7 @@ import { CheckIcon, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import toast from 'react-hot-toast'
 
 export default function ProModal() {
   const router = useRouter()
@@ -29,7 +30,7 @@ export default function ProModal() {
 
       router.push(url)
     } catch (err) {
-      console.log('[STRIPE_CLIENT_ERROR]' + err)
+      toast.error('Something went wrong.')
     } finally {
       setLoading(false)
     }

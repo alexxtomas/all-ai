@@ -19,6 +19,7 @@ import BotAvatar from '@/components/bot-avatar'
 import { conversationFormSchema, ConversationFormType } from './schema'
 import ApiError from '@/entities/api_error'
 import { useProModalStore } from '@/store/use-pro-modal-store'
+import toast from 'react-hot-toast'
 
 export default function ConversationPage() {
   const proModal = useProModalStore((state) => state)
@@ -34,6 +35,7 @@ export default function ConversationPage() {
   const isLoading = form.formState.isSubmitting
 
   const noMessages = messages.length === 0 && !isLoading
+
   const onSubmit = async (values: ConversationFormType) => {
     try {
       const userMessage: ChatCompletionRequestMessage = {
@@ -51,6 +53,8 @@ export default function ConversationPage() {
     } catch (err) {
       if (err instanceof ApiError && err.status === 403) {
         proModal.onOpen()
+      } else {
+        toast.error('Something went wrong.')
       }
     } finally {
       router.refresh()

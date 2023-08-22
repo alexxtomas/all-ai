@@ -26,6 +26,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import ApiError from '@/entities/api_error'
 import { useProModalStore } from '@/store/use-pro-modal-store'
+import toast from 'react-hot-toast'
 
 export default function ImagePage() {
   const proModal = useProModalStore((state) => state)
@@ -56,6 +57,8 @@ export default function ImagePage() {
     } catch (err) {
       if (err instanceof ApiError && err.status === 403) {
         proModal.onOpen()
+      } else {
+        toast.error('Something went wrong.')
       }
     } finally {
       router.refresh()

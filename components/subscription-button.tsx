@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Zap } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import toast from 'react-hot-toast'
 
 interface Props {
   isPro: boolean
@@ -20,7 +21,7 @@ export default function SubscriptionButton({ isPro }: Props) {
 
       router.push(url)
     } catch (err) {
-      console.log('[BILLING_ERROR]', err)
+      toast.error('Something went wrong.')
     } finally {
       setLoading(false)
     }

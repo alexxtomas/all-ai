@@ -3,7 +3,8 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import ProModal from '@/components/pro-modal'
-// import ModalProvider from '@/components/modal-provider'
+import { Toaster } from 'react-hot-toast'
+import CrispChat from '@/components/crisp-chat'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,6 +19,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <html lang='en'>
         <body className={inter.className}>
           <ProModal />
+          <Toaster />
+          <CrispChat />
           {children}
         </body>
       </html>

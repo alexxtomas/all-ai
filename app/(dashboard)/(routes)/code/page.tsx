@@ -19,6 +19,7 @@ import ReactMarkdown from 'react-markdown'
 import { codeFormSchema, CodeFormType } from './schema'
 import ApiError from '@/entities/api_error'
 import { useProModalStore } from '@/store/use-pro-modal-store'
+import toast from 'react-hot-toast'
 
 export default function CodePage() {
   const proModal = useProModalStore((state) => state)
@@ -49,9 +50,10 @@ export default function CodePage() {
 
       form.reset()
     } catch (err) {
-      // Open Pro Modal
       if (err instanceof ApiError && err.status === 403) {
         proModal.onOpen()
+      } else {
+        toast.error('Something went wrong.')
       }
     } finally {
       router.refresh()
