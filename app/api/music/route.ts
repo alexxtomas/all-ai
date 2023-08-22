@@ -4,12 +4,21 @@ import { auth } from '@clerk/nextjs'
 import { NextResponse } from 'next/server'
 import Replicate from 'replicate'
 import { increaseApiLimitCount, checkApiLimitCount } from '@/lib/api-limit'
+import { checkSubscription } from '@/lib/subscription'
 
 const replicate = new Replicate({
   auth: REPLICATE_API_KEY!
 })
 
-async function validation({ userId, prompt }: { userId: string | null; prompt: string }) {
+async function validation({
+  userId,
+  prompt,
+  isPro
+}: {
+  userId: string | null
+  prompt: string
+  isPro: boolean
+}) {
   const freeTrial = await checkApiLimitCount()
   if (!userId) {
     throw new ApiError({ message: 'Unauthorized', status: 401 })
@@ -18,7 +27,7 @@ async function validation({ userId, prompt }: { userId: string | null; prompt: s
   if (!prompt) {
     throw new ApiError({ message: '"prompt" not provided', status: 400 })
   }
-  if (!freeTrial) {
+  if (!freeTrial && !isPro) {
     throw new ApiError({ message: 'Free trial has expired', status: 403 })
   }
 }
@@ -28,9 +37,10 @@ export async function POST(req: Request) {
     const { userId } = auth()
     const body = await req.json()
     const { prompt } = body
+    const isPro = await checkSubscription()
 
     try {
-      await validation({ userId, prompt })
+      await validation({ userId, prompt, isPro })
     } catch (err) {
       const _err = err as ApiError
       return new NextResponse(_err.message, { status: _err.status })

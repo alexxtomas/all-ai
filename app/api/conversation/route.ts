@@ -4,6 +4,8 @@ import { auth } from '@clerk/nextjs'
 import { NextResponse } from 'next/server'
 import { Configuration, OpenAIApi } from 'openai'
 import { increaseApiLimitCount, checkApiLimitCount } from '@/lib/api-limit'
+import { checkSubscription } from '@/lib/subscription'
+
 const configuration = new Configuration({
   apiKey: OPENAI_API_KEY
 })
@@ -13,11 +15,13 @@ const openai = new OpenAIApi(configuration)
 async function validation({
   userId,
   configuration,
-  messages
+  messages,
+  isPro
 }: {
   userId: string | null
   configuration: Configuration
   messages: string[]
+  isPro: boolean
 }) {
   const freeTrial = await checkApiLimitCount()
   if (!userId) {
@@ -31,7 +35,7 @@ async function validation({
     throw new ApiError({ message: 'Messages not provided', status: 400 })
   }
 
-  if (!freeTrial) {
+  if (!freeTrial && !isPro) {
     throw new ApiError({ message: 'Free trial has expired', status: 403 })
   }
 }
@@ -40,9 +44,10 @@ export async function POST(req: Request) {
   try {
     const { userId } = auth()
     const messages = await req.json()
+    const isPro = await checkSubscription()
 
     try {
-      await validation({ userId, configuration, messages })
+      await validation({ userId, configuration, messages, isPro })
     } catch (err) {
       const _err = err as ApiError
       return new NextResponse(_err.message, { status: _err.status })
@@ -52,7 +57,10 @@ export async function POST(req: Request) {
       model: 'gpt-3.5-turbo',
       messages
     })
-    await increaseApiLimitCount()
+
+    if (!isPro) {
+      await increaseApiLimitCount()
+    }
 
     return NextResponse.json(response.data.choices[0].message)
   } catch (err) {

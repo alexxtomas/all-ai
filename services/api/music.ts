@@ -1,3 +1,4 @@
+import ApiError from '@/entities/api_error'
 import { ChatCompletionRequestMessage } from 'openai'
 
 export const sendMusicQuery = async ({ values }: { values: any }) => {
@@ -8,12 +9,12 @@ export const sendMusicQuery = async ({ values }: { values: any }) => {
     })
 
     if (!response.ok) {
-      throw new Error('Error sending message')
+      throw new ApiError({ message: response.statusText, status: response.status })
     }
 
     const { audio } = await response.json()
     return audio
   } catch (err) {
-    console.log(err)
+    throw err
   }
 }

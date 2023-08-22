@@ -6,11 +6,14 @@ import { Zap } from 'lucide-react'
 import { useProModalStore } from '@/store/use-pro-modal-store'
 
 interface Props {
+  isPro: boolean
   count: number
 }
 
-export default function FreeCounter({ count }: Props) {
+export default function FreeCounter({ count, isPro }: Props) {
   const onOpen = useProModalStore((state) => state.onOpen)
+
+  if (isPro) return null
   return (
     <Card className='bg-white/10 px-3 border-0'>
       <CardContent className='py-6'>

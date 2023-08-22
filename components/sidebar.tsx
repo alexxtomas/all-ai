@@ -5,12 +5,14 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import FreeCounter from '@/components/free-counter'
+import { checkSubscription } from '@/lib/subscription'
 
 interface Props {
   apiLimitCount: number
+  isPro: boolean
 }
 
-export default function Sidebar({ apiLimitCount }: Props) {
+export default function Sidebar({ apiLimitCount, isPro }: Props) {
   const pathname = usePathname()
 
   return (
@@ -41,7 +43,7 @@ export default function Sidebar({ apiLimitCount }: Props) {
           })}
         </ul>
       </div>
-      <FreeCounter count={apiLimitCount} />
+      <FreeCounter isPro={isPro} count={apiLimitCount} />
     </div>
   )
 }

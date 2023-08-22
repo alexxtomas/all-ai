@@ -49,7 +49,6 @@ export default function ConversationPage() {
 
       form.reset()
     } catch (err) {
-      // Open Pro Modal
       if (err instanceof ApiError && err.status === 403) {
         proModal.onOpen()
       }

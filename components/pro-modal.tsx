@@ -14,9 +14,27 @@ import { TOOLS } from '@/utils/constants'
 import ProductCard from '@/components/product-card'
 import { CheckIcon, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 export default function ProModal() {
+  const router = useRouter()
   const modal = useProModalStore()
+  const [loading, setLoading] = useState(false)
+  const onSubscribe = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch('/api/stripe')
+      const { url } = await response.json()
+
+      router.push(url)
+    } catch (err) {
+      console.log('[STRIPE_CLIENT_ERROR]' + err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <Dialog open={modal.isOpen} onOpenChange={modal.onClose}>
       <DialogContent>
@@ -37,7 +55,13 @@ export default function ProModal() {
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button size={'lg'} variant={'pro'} className='w-full'>
+          <Button
+            disabled={loading}
+            onClick={onSubscribe}
+            size={'lg'}
+            variant={'pro'}
+            className='w-full'
+          >
             Upgrade
             <Zap className='w-4 h-4 ml-2 fill-white' />
           </Button>

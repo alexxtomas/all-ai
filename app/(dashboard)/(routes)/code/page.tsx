@@ -17,8 +17,11 @@ import BotAvatar from '@/components/bot-avatar'
 import { sendCodeQuery } from '@/services/api/code'
 import ReactMarkdown from 'react-markdown'
 import { codeFormSchema, CodeFormType } from './schema'
+import ApiError from '@/entities/api_error'
+import { useProModalStore } from '@/store/use-pro-modal-store'
 
 export default function CodePage() {
+  const proModal = useProModalStore((state) => state)
   const router = useRouter()
   const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([])
   const form = useForm<CodeFormType>({
@@ -47,6 +50,9 @@ export default function CodePage() {
       form.reset()
     } catch (err) {
       // Open Pro Modal
+      if (err instanceof ApiError && err.status === 403) {
+        proModal.onOpen()
+      }
     } finally {
       router.refresh()
     }

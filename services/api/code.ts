@@ -1,3 +1,4 @@
+import ApiError from '@/entities/api_error'
 import { ChatCompletionRequestMessage } from 'openai'
 
 export const sendCodeQuery = async ({ messages }: { messages: ChatCompletionRequestMessage[] }) => {
@@ -8,7 +9,7 @@ export const sendCodeQuery = async ({ messages }: { messages: ChatCompletionRequ
     })
 
     if (!response.ok) {
-      throw new Error('[CODE_SERVICE]: Send Code Query Error ')
+      throw new ApiError({ message: response.statusText, status: response.status })
     }
 
     return response.json()

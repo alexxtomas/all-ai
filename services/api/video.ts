@@ -1,3 +1,5 @@
+import ApiError from '@/entities/api_error'
+
 export const sendVidoQuery = async ({ values }: { values: any }) => {
   try {
     const response = await fetch('/api/video', {
@@ -6,12 +8,12 @@ export const sendVidoQuery = async ({ values }: { values: any }) => {
     })
 
     if (!response.ok) {
-      throw new Error('Error sending message')
+      throw new ApiError({ message: response.statusText, status: response.status })
     }
 
     const data = await response.json()
     return data[0]
   } catch (err) {
-    console.log(err)
+    throw err
   }
 }

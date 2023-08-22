@@ -1,4 +1,5 @@
 import { ImageFormType } from '@/app/(dashboard)/(routes)/image/schema'
+import ApiError from '@/entities/api_error'
 
 export async function sendImageQuery({ values }: { values: ImageFormType }) {
   try {
@@ -8,11 +9,11 @@ export async function sendImageQuery({ values }: { values: ImageFormType }) {
     })
 
     if (!response.ok) {
-      throw new Error('Error sending message')
+      throw new ApiError({ message: response.statusText, status: response.status })
     }
 
     return response.json()
   } catch (err) {
-    console.log(err)
+    throw err
   }
 }

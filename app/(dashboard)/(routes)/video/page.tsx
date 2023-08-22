@@ -13,8 +13,11 @@ import Empty from '@/components/empty'
 import Loader from '@/components/loader'
 import { musicFormSchema, MusicFormType } from './schema'
 import { sendVidoQuery } from '@/services/api/video'
+import ApiError from '@/entities/api_error'
+import { useProModalStore } from '@/store/use-pro-modal-store'
 
 export default function VideoPage() {
+  const proModal = useProModalStore((state) => state)
   const router = useRouter()
   const [video, setVideo] = useState<string>('')
   const form = useForm<MusicFormType>({
@@ -34,8 +37,9 @@ export default function VideoPage() {
       setVideo(video)
       form.reset()
     } catch (err) {
-      // Open Pro Modal
-      console.error(err)
+      if (err instanceof ApiError && err.status === 403) {
+        proModal.onOpen()
+      }
     } finally {
       router.refresh()
     }

@@ -11,7 +11,6 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import Empty from '@/components/empty'
 import Loader from '@/components/loader'
-import { cn } from '@/lib/utils'
 import { imageFormSchema, ImageFormType } from './schema'
 import { sendImageQuery } from '@/services/api/image'
 import {
@@ -25,8 +24,11 @@ import { AMOUNT_OPTIONS, RESOLUTION_OPTIONS } from './constants'
 import { Card, CardFooter } from '@/components/ui/card'
 import Image from 'next/image'
 import Link from 'next/link'
+import ApiError from '@/entities/api_error'
+import { useProModalStore } from '@/store/use-pro-modal-store'
 
 export default function ImagePage() {
+  const proModal = useProModalStore((state) => state)
   const router = useRouter()
   const [images, setImages] = useState<string[]>([])
   const form = useForm<ImageFormType>({
@@ -52,8 +54,9 @@ export default function ImagePage() {
       setImages(urls)
       form.reset()
     } catch (err) {
-      // Open Pro Modal
-      console.error(err)
+      if (err instanceof ApiError && err.status === 403) {
+        proModal.onOpen()
+      }
     } finally {
       router.refresh()
     }
