@@ -92,6 +92,33 @@ export const TOOLS = [
   }
 ]
 
+export const TESTIMONIALS = [
+  {
+    name: 'Ramon',
+    avatar: 'R',
+    title: 'Software Engineer',
+    description: "This is the best application I've used"
+  },
+  {
+    name: 'Ramon',
+    avatar: 'R',
+    title: 'Software Engineer',
+    description: "This is the best application I've used"
+  },
+  {
+    name: 'Ramon',
+    avatar: 'R',
+    title: 'Software Engineer',
+    description: "This is the best application I've used"
+  },
+  {
+    name: 'Ramon',
+    avatar: 'R',
+    title: 'Software Engineer',
+    description: "This is the best application I've used"
+  }
+]
+
 export const MAX_FREE_COUNTS = 5
 
 export const MONTSERRAT = Montserrat({ weight: '600', subsets: ['latin'] })
